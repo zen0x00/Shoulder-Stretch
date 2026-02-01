@@ -1,10 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using System;
 public class HUDController : MonoBehaviour
 {
-    [SerializeField] private Text scoreText, timerText, difficultyText, ammoText;
-    [SerializeField] private Image shieldIcon;
+    [SerializeField] private TextMeshProUGUI scoreText, timerText, difficultyText, ammoText;
+    private Image shieldIcon;
     [SerializeField] private Slider healthSlider;
     [SerializeField] private ScoringSystem scoring;
     [SerializeField] private GameStateManager gameManager;

@@ -1,9 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using System;
 public class AnalyticsDashboardController : MonoBehaviour
 {
-    [SerializeField] private Text timeText, leftText, rightText, totalText, accuracyText, difficultyText, calorieText, scoreText;
+    [SerializeField] private TextMeshProUGUI timeText, leftText, rightText, totalText, accuracyText, difficultyText, calorieText, scoreText;
     [SerializeField] private Button returnMenuBtn;
     [SerializeField] private ScoringSystem scoring;
     [SerializeField] private FitnessTrackingSystem fitness;
