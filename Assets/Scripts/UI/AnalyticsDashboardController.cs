@@ -4,6 +4,7 @@ using System;
 public class AnalyticsDashboardController : MonoBehaviour
 {
     [SerializeField] private Text timeText, leftText, rightText, totalText, accuracyText, difficultyText, calorieText, scoreText;
+    [SerializeField] private Button returnMenuBtn;
     [SerializeField] private ScoringSystem scoring;
     [SerializeField] private FitnessTrackingSystem fitness;
     [SerializeField] private InputSystem input;
@@ -15,6 +16,7 @@ public class AnalyticsDashboardController : MonoBehaviour
         if (fitness == null) fitness = FindFirstObjectByType<FitnessTrackingSystem>();
         if (input == null) input = FindFirstObjectByType<InputSystem>();
         if (gameManager == null) gameManager = FindFirstObjectByType<GameStateManager>();
+        if (returnMenuBtn) returnMenuBtn.onClick.AddListener(() => gameManager?.ReturnToIdle());
     }
     public void Populate()
     {
