@@ -10,27 +10,30 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         if (gameManager == null) gameManager = FindFirstObjectByType<GameStateManager>();
-        if (startButton) startButton.onClick.AddListener(() => { audioManager.PlayButtonClick(); ShowDifficultySelection(); });
-        if (beginnerBtn) beginnerBtn.onClick.AddListener(() => { audioManager.PlayButtonClick(); StartWithDifficulty(0); });
-        if (moderateBtn) moderateBtn.onClick.AddListener(() => { audioManager.PlayButtonClick(); StartWithDifficulty(1); });
-        if (expertBtn) expertBtn.onClick.AddListener(() => { audioManager.PlayButtonClick(); StartWithDifficulty(2); });
-        if (dashboardNxtBtn) dashboardNxtBtn.onClick.AddListener(() => { audioManager.PlayButtonClick(); ShowAnalytics();});
-        if (analyticsNxtBtn) analyticsNxtBtn.onClick.AddListener(() => { audioManager.PlayButtonClick(); ShowGraph(); });
-        if (graphNxtBtn) graphNxtBtn.onClick.AddListener(() => { audioManager.PlayButtonClick(); gameManager.ReturnToIdle(); });
-        if (gameOverNextBtn) gameOverNextBtn.onClick.AddListener(() => { audioManager.PlayButtonClick(); gameManager.SetStateDirectly(GameState.Dashboard); });
-        if (gameOverRestartBtn) gameOverRestartBtn.onClick.AddListener(() => { audioManager.PlayButtonClick(); gameManager.ReturnToIdle(); });
-        if (levelCompleteNxtBtn) levelCompleteNxtBtn.onClick.AddListener(() => { audioManager.PlayButtonClick(); gameManager.SetStateDirectly(GameState.Dashboard); });
-        if (levelCompleteRestartBtn) levelCompleteRestartBtn.onClick.AddListener(() => { audioManager.PlayButtonClick(); gameManager.ReturnToIdle(); });
+        Debug.Log($"[UI] Start — gameManager={gameManager}, audioManager={audioManager}, startButton={startButton}, menuPanel={menuPanel}");
+        if (startButton) startButton.onClick.AddListener(() => { audioManager?.PlayButtonClick(); ShowDifficultySelection(); });
+        if (beginnerBtn) beginnerBtn.onClick.AddListener(() => { audioManager?.PlayButtonClick(); StartWithDifficulty(0); });
+        if (moderateBtn) moderateBtn.onClick.AddListener(() => { audioManager?.PlayButtonClick(); StartWithDifficulty(1); });
+        if (expertBtn) expertBtn.onClick.AddListener(() => { audioManager?.PlayButtonClick(); StartWithDifficulty(2); });
+        if (dashboardNxtBtn) dashboardNxtBtn.onClick.AddListener(() => { audioManager?.PlayButtonClick(); ShowAnalytics();});
+        if (analyticsNxtBtn) analyticsNxtBtn.onClick.AddListener(() => { audioManager?.PlayButtonClick(); ShowGraph(); });
+        if (graphNxtBtn) graphNxtBtn.onClick.AddListener(() => { audioManager?.PlayButtonClick(); gameManager.ReturnToIdle(); });
+        if (gameOverNextBtn) gameOverNextBtn.onClick.AddListener(() => { audioManager?.PlayButtonClick(); gameManager.SetStateDirectly(GameState.Dashboard); });
+        if (gameOverRestartBtn) gameOverRestartBtn.onClick.AddListener(() => { audioManager?.PlayButtonClick(); gameManager.ReturnToIdle(); });
+        if (levelCompleteNxtBtn) levelCompleteNxtBtn.onClick.AddListener(() => { audioManager?.PlayButtonClick(); gameManager.SetStateDirectly(GameState.Dashboard); });
+        if (levelCompleteRestartBtn) levelCompleteRestartBtn.onClick.AddListener(() => { audioManager?.PlayButtonClick(); gameManager.ReturnToIdle(); });
 
         if (gameManager != null) gameManager.OnStateChanged += HandleStateChange;
     }
     private void ShowDifficultySelection()
     {
+        Debug.Log("[UI] ShowDifficultySelection");
         menuPanel?.SetActive(false);
         difficultyPanel?.SetActive(true);
     }
     private void StartWithDifficulty(int index)
     {
+        Debug.Log($"[UI] StartWithDifficulty index={index}");
         gameManager?.SetDifficulty(index);
         difficultyPanel?.SetActive(false);
         gameManager?.StartGame();
@@ -46,6 +49,7 @@ public class UIManager : MonoBehaviour
     }
     private void HandleStateChange(GameState state)
     {
+        Debug.Log($"[UI] HandleStateChange → {state}");
         if (state == GameState.Idle)
         {
             menuPanel?.SetActive(true);

@@ -36,6 +36,7 @@ public class InputSystem : MonoBehaviour
     private void HandleStateChange(GameState newState)
     {
         inputEnabled = newState == GameState.Running || newState == GameState.Combat;
+        Debug.Log($"[INPUT] State → {newState}, inputEnabled={inputEnabled}");
     }
 
     private void Update()
@@ -48,13 +49,15 @@ public class InputSystem : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
+            Debug.Log("[INPUT] A pressed → leftShoot");
             TryPerformAction(ActionType.leftShoot);
-            animator.SetTrigger("LeftShoot");
+            if (animator != null) animator.SetTrigger("LeftShoot");
         }
         if (Input.GetKeyDown(KeyCode.D))
         {
+            Debug.Log("[INPUT] D pressed → rightShoot");
             TryPerformAction(ActionType.rightShoot);
-            animator.SetTrigger("RightShoot");
+            if (animator != null) animator.SetTrigger("RightShoot");
         }
 
     }

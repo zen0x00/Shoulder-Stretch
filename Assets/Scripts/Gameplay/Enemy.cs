@@ -8,13 +8,15 @@ public class Enemy : MonoBehaviour
     [SerializeField] private int health = 100;
     [SerializeField] private float speed = 1f;
     [SerializeField] private int damage = 20;
-    [SerializeField]private float packSpeed=16f;
-    [SerializeField]private ParticleSystem deathParticle;
+    [SerializeField] private float packSpeed = 16f;
+    [SerializeField] private int ammoDropAmount = 5;
+    [SerializeField] private float ammoDropChance = 0.3f;
+    [SerializeField] private ParticleSystem deathParticle;
     private int currentHealth;
     private Transform player;
     private bool movePack=false;
     private PlayerController playerCtrl;
-    private GameObject AmmoPack;
+    [SerializeField] private GameObject AmmoPack;
     private Transform packParent;
     private Vector3 packLocalPos;
 
@@ -23,7 +25,8 @@ public class Enemy : MonoBehaviour
 
     Animator animator;
 
-    private bool hasAttacked = false;
+    [SerializeField] private float attackCooldown = 1f;
+    private float attackTimer = 0f;
 
     private SkinnedMeshRenderer[] renderers;
     private Material[] originalMaterials;
@@ -39,9 +42,12 @@ public class Enemy : MonoBehaviour
     void Awake()
     {
         audioManager = FindFirstObjectByType<AudioManager>();
-        AmmoPack=transform.Find("AmmoPack").gameObject;
-        packParent = AmmoPack.transform.parent;
-        packLocalPos = AmmoPack.transform.localPosition;
+        if (AmmoPack == null) AmmoPack = transform.Find("AmmoPack")?.gameObject;
+        if (AmmoPack != null)
+        {
+            packParent = AmmoPack.transform.parent;
+            packLocalPos = AmmoPack.transform.localPosition;
+        }
 
         renderers = GetComponentsInChildren<SkinnedMeshRenderer>();
 
@@ -59,18 +65,20 @@ public class Enemy : MonoBehaviour
         playerCtrl = player.GetComponent<PlayerController>();
         currentHealth = health;
 
-        hasAttacked = false;
+        CancelInvoke(nameof(DisableEnemy));
+        attackTimer = 0f;
+        movePack = false;
 
         for (int i = 0; i < renderers.Length; i++)
         {
             renderers[i].material = originalMaterials[i];
         }
 
-
         if (AmmoPack != null)
         {
-            AmmoPack.SetActive(false);
-            AmmoPack.SetActive(UnityEngine.Random.value<0.3f);
+            AmmoPack.transform.SetParent(packParent);
+            AmmoPack.transform.localPosition = packLocalPos;
+            AmmoPack.SetActive(UnityEngine.Random.value < ammoDropChance);
         }
         gameObject.SetActive(true);
     }
@@ -82,7 +90,7 @@ public class Enemy : MonoBehaviour
             AmmoPack.transform.position = Vector3.MoveTowards(AmmoPack.transform.position,player.position,packSpeed * Time.deltaTime);
             if (Vector3.Distance(AmmoPack.transform.position, player.position) < 0.5f)
             {
-                playerCtrl.AmmoReload(5);
+                playerCtrl.AmmoReload(ammoDropAmount);
                 AmmoPack.transform.SetParent(packParent);
                 AmmoPack.transform.localPosition = packLocalPos;
                 AmmoPack.SetActive(false);
@@ -107,24 +115,24 @@ public class Enemy : MonoBehaviour
         }
         else
         {
-            
-            if (!hasAttacked)
+            attackTimer -= Time.deltaTime;
+            if (attackTimer <= 0f)
             {
-                hasAttacked = true;
+                attackTimer = attackCooldown;
                 Attack();
             }
         }
     }
     private void Attack()
     {
+        Debug.Log($"[ENEMY] Attack → player health will drop by {damage}");
         if (playerCtrl) playerCtrl.TakeDamage(damage);
-        animator.SetTrigger("IsAttack");
-        
+        if (animator != null) animator.SetTrigger("IsAttack");
     }
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
-        deathParticle.Play();
+        if (deathParticle != null) deathParticle.Play();
 
         HitEffect();
         if (currentHealth <= 0) Die();
@@ -141,7 +149,7 @@ public class Enemy : MonoBehaviour
         }
         ScoringSystem.Instance?.AddKillPoints();
         
-        animator.SetTrigger("IsDead");
+        if (animator != null) animator.SetTrigger("IsDead");
         if(audioManager != null)
         {
             audioManager.PlayZombieDead();

@@ -30,6 +30,7 @@ public class PlayerController : MonoBehaviour
         if (gameManager == null) gameManager = FindFirstObjectByType<GameStateManager>();
         if (difficultyScaler == null) difficultyScaler = FindFirstObjectByType<DifficultyScaler>();
         if (uiManager == null) uiManager = FindFirstObjectByType<UIManager>();
+        Debug.Log($"[PLAYER] Start — gameManager={gameManager}, difficultyScaler={difficultyScaler}, uiManager={uiManager}, audioManager={audioManager}");
         ResetPlayer();
         if (gameManager != null) gameManager.OnStateChanged += HandleStateChange;
     }
@@ -40,6 +41,7 @@ public class PlayerController : MonoBehaviour
         currentHealth = maxHealth;
         currentAmmo = difficultyScaler?.InitialAmmo ?? 5;
         transform.position = new Vector3(0, 0, 0);
+        Debug.Log($"[PLAYER] Reset — health={currentHealth}, ammo={currentAmmo}");
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
         OnAmmoChanged?.Invoke(currentAmmo);
         OnShieldStatusChanged?.Invoke(false);
@@ -52,6 +54,7 @@ public class PlayerController : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
+        Debug.Log($"[PLAYER] TakeDamage {damage} — health now {currentHealth}");
         audioManager.PlayPlayerDamageTakenSound();
         uiManager?.ShowDamageBlink();
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
@@ -59,6 +62,7 @@ public class PlayerController : MonoBehaviour
     }
     private void Die()
     {
+        Debug.Log("[PLAYER] Died");
         OnPlayerDeath?.Invoke();
         gameManager?.EndGame();
     }
@@ -66,6 +70,7 @@ public class PlayerController : MonoBehaviour
     public bool UseAmmo()
     {
         if (currentAmmo > 0) { currentAmmo--; OnAmmoChanged?.Invoke(currentAmmo); return true; }
+        Debug.Log("[PLAYER] UseAmmo — out of ammo");
         return false;
     }
     public void ActivateShield()

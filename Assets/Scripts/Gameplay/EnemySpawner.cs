@@ -32,12 +32,14 @@ public class EnemySpawner : MonoBehaviour
         spawnInterval=SpawnDuration/Zombies;
         wavesText.text = "Wave-1";
         spawnTimer=2f;
+        Debug.Log($"[SPAWNER] Start — gameManager={gameManager}, player={player}, enemyPrefabs count={enemyPrefabs?.Length ?? 0}, spawnInterval={spawnInterval:F1}s");
     }
     private void Update()
     {
         if (gameManager == null || !gameManager.IsPlaying) return;
         if (gameManager.IsPlaying && !gameStarted)
         {
+            Debug.Log("[SPAWNER] Game started — beginning wave 1");
             gameStarted=true;
             StartCoroutine(Wavetimer());
         }
@@ -46,6 +48,7 @@ public class EnemySpawner : MonoBehaviour
         {
             if (currentwave < 3)
             {
+                Debug.Log($"[SPAWNER] Wave {currentwave} cleared → starting wave {currentwave + 1}");
                 waveTransitioning = true;
                 currentwave++;
                 wavesText.text = "Wave-" + currentwave;
@@ -75,7 +78,8 @@ public class EnemySpawner : MonoBehaviour
     }
     IEnumerator Wavetimer()
     {
-        audioManager.PlayWavesSound();
+        if (audioManager == null) audioManager = FindFirstObjectByType<AudioManager>();
+        audioManager?.PlayWavesSound();
         wavesText.gameObject.SetActive(true);
         yield return new WaitForSeconds(2);
         wavesText.gameObject.SetActive(false);
@@ -84,6 +88,7 @@ public class EnemySpawner : MonoBehaviour
     private void SpawnEnemy()
     {
         Enemy enemy = GetFromPool();
+        if (enemy == null) return;
         float xOffset;
 
         if (Random.value > 0.5f)
@@ -99,6 +104,7 @@ public class EnemySpawner : MonoBehaviour
         enemy.lane = spwanLeft? Enemy.Lane.Left : Enemy.Lane.Right;
         enemy.Initialize(player.transform);
         spawnedCount++;
+        Debug.Log($"[SPAWNER] Spawned enemy {spawnedCount}/{Zombies} in {enemy.lane} lane at {pos}");
        
     }
     bool AreEnemiesAlive()
@@ -114,6 +120,11 @@ public class EnemySpawner : MonoBehaviour
     private Enemy GetFromPool()
     {
         foreach (var e in activeEnemies) if (!e.gameObject.activeInHierarchy) return e;
+        if (enemyPrefabs == null || enemyPrefabs.Length == 0)
+        {
+            Debug.LogError("EnemySpawner: enemyPrefabs array is empty — assign prefabs in Inspector.");
+            return null;
+        }
         int index = Random.Range(0, enemyPrefabs.Length);
         Enemy newEnemy = Instantiate(enemyPrefabs[index], transform);
         activeEnemies.Add(newEnemy);

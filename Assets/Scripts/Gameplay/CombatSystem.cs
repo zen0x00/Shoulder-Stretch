@@ -25,6 +25,7 @@ public class CombatSystem : MonoBehaviour
         if (player == null) player = GetComponent<PlayerController>();
         if (spawner == null) spawner = FindFirstObjectByType<EnemySpawner>();
         if (inputSystem != null) inputSystem.OnActionPerformed += HandleAction;
+        Debug.Log($"[COMBAT] Start — inputSystem={inputSystem}, player={player}, spawner={spawner}, audioManager={audioManager}, ShootLeft={ShootLeftObj}, ShootRight={ShootRightObj}, barrel={barrel}, bulletTracer={bulletTracer}");
     }
     private void OnDestroy() { if (inputSystem != null) inputSystem.OnActionPerformed -= HandleAction; }
     private void HandleAction(ActionType action, bool success)
@@ -40,20 +41,20 @@ public class CombatSystem : MonoBehaviour
     
     private void PerforLeftShoot()
     {
-        if (player == null || !player.UseAmmo()) return;
-
+        if (player == null || !player.UseAmmo()) { Debug.Log("[COMBAT] LeftShoot blocked — no player or no ammo"); return; }
+        Debug.Log("[COMBAT] LeftShoot fired");
         ShootAtLane(Enemy.Lane.Left);
-        audioManager.PlayGunShot();
-        cameraFollow.Shake(0.1f, 0.2f);
+        audioManager?.PlayGunShot();
+        cameraFollow?.Shake(0.1f, 0.2f);
     }
 
     private void PerforRightShoot()
     {
-        if (player == null || !player.UseAmmo()) return;
-
+        if (player == null || !player.UseAmmo()) { Debug.Log("[COMBAT] RightShoot blocked — no player or no ammo"); return; }
+        Debug.Log("[COMBAT] RightShoot fired");
         ShootAtLane(Enemy.Lane.Right);
-        audioManager.PlayGunShot();
-        cameraFollow.Shake(0.1f, 0.2f);
+        audioManager?.PlayGunShot();
+        cameraFollow?.Shake(0.1f, 0.2f);
     }
 
 
@@ -77,7 +78,10 @@ public class CombatSystem : MonoBehaviour
 
         Transform empty = targetLane == Enemy.Lane.Left ? ShootLeftObj : ShootRightObj;
 
-        Vector3 endPoint = closest != null? closest.transform.position : empty.position;
+        if (closest == null && empty == null) { Debug.Log($"[COMBAT] ShootAtLane {targetLane} — no enemy + no aim point, skip"); return; }
+        if (closest != null) Debug.Log($"[COMBAT] Hit enemy in {targetLane} lane at dist {Vector3.Distance(transform.position, closest.transform.position):F1}");
+        else Debug.Log($"[COMBAT] No enemy in {targetLane} lane, shooting at aim point");
+        Vector3 endPoint = closest != null ? closest.transform.position : empty.position;
         endPoint = new Vector3(endPoint.x, endPoint.y + 3f, endPoint.z);
 
         muzzelFlash.Play();

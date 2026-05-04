@@ -13,21 +13,21 @@ public class BulletTracer : MonoBehaviour
         lineRenderer.positionCount = 2;
         lineRenderer.startWidth = traceWidth;
         lineRenderer.endWidth = 0f;
-        gameObject.SetActive(false);
+        lineRenderer.enabled = false;
     }
 
     public void Fire(Vector3 from, Vector3 to)
     {
         StopAllCoroutines();
-        gameObject.SetActive(true);
         lineRenderer.SetPosition(0, from);
         lineRenderer.SetPosition(1, to);
+        lineRenderer.enabled = true;
         StartCoroutine(FadeOut());
     }
 
     private IEnumerator FadeOut()
     {
         yield return new WaitForSeconds(traceDuration);
-        gameObject.SetActive(false);
+        lineRenderer.enabled = false;
     }
 }
