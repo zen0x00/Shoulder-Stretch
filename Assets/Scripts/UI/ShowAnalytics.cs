@@ -31,12 +31,11 @@ public class ShowAnalytics : MonoBehaviour
         calories.text = gameData.calories.ToString();
         score.text = gameData.finalScore.ToString();
 
-        //dummy data
-        DummyData1.text = gameData.dummy1.ToString();
-        DummyData2.text = gameData.dummy2.ToString();
-        DummyData3.text = gameData.dummy3.ToString();
-        DummyData4.text = gameData.dummy4.ToString();
-        DummyData5.text = gameData.dummy5.ToString();
+        if (DummyData1) DummyData1.text = "";
+        if (DummyData2) DummyData2.text = "";
+        if (DummyData3) DummyData3.text = "";
+        if (DummyData4) DummyData4.text = "";
+        if (DummyData5) DummyData5.text = "";
     }
 
 
