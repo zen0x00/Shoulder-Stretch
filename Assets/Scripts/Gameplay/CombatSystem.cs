@@ -17,7 +17,7 @@ public class CombatSystem : MonoBehaviour
 
 
 
-    public AudioManager audioManager;
+    [SerializeField] private AudioManager audioManager;
 
     private void Start()
     {

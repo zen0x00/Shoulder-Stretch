@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private GameStateManager gameManager;
@@ -24,6 +23,7 @@ public class EnemySpawner : MonoBehaviour
     public List<Enemy> activeEnemies = new List<Enemy>();
     private float spawnTimer;
     private bool gameStarted;
+    private bool waveTransitioning;
     private void Start()
     {
         if (gameManager == null) gameManager = FindFirstObjectByType<GameStateManager>();
@@ -42,10 +42,11 @@ public class EnemySpawner : MonoBehaviour
             StartCoroutine(Wavetimer());
         }
         spawnTimer -= Time.deltaTime;
-        if (spawnedCount >= Zombies&&!AreEnemiesAlive())
+        if (spawnedCount >= Zombies && !AreEnemiesAlive() && !waveTransitioning)
         {
             if (currentwave < 3)
             {
+                waveTransitioning = true;
                 currentwave++;
                 wavesText.text = "Wave-" + currentwave;
                 StartCoroutine(Wavetimer());
@@ -78,6 +79,7 @@ public class EnemySpawner : MonoBehaviour
         wavesText.gameObject.SetActive(true);
         yield return new WaitForSeconds(2);
         wavesText.gameObject.SetActive(false);
+        waveTransitioning = false;
     }
     private void SpawnEnemy()
     {
@@ -112,7 +114,7 @@ public class EnemySpawner : MonoBehaviour
     private Enemy GetFromPool()
     {
         foreach (var e in activeEnemies) if (!e.gameObject.activeInHierarchy) return e;
-        int index = Random.Range(0,2);
+        int index = Random.Range(0, enemyPrefabs.Length);
         Enemy newEnemy = Instantiate(enemyPrefabs[index], transform);
         activeEnemies.Add(newEnemy);
         return newEnemy;

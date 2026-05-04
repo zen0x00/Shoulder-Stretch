@@ -61,20 +61,19 @@ public class GameStateManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         SetState(GameState.LevelCompleted);
-        EnemySpawnerObj.SetActive(false);
-        playerController.gameObject.SetActive(false);
-        enemySpawner.gameObject.SetActive(false);
+        if (EnemySpawnerObj != null) EnemySpawnerObj.SetActive(false);
+        if (playerController != null) playerController.gameObject.SetActive(false);
+        if (enemySpawner != null) enemySpawner.gameObject.SetActive(false);
     }
 
     public void EndGame()
     {
         Time.timeScale = 1f;
         SetState(GameState.GameOver);
-        enemy.enabled = false;
-        EnemySpawnerObj.SetActive(false);
-        playerController.gameObject.SetActive(false);
-        enemySpawner.gameObject.SetActive(false);
-
+        if (enemy != null) enemy.enabled = false;
+        if (EnemySpawnerObj != null) EnemySpawnerObj.SetActive(false);
+        if (playerController != null) playerController.gameObject.SetActive(false);
+        if (enemySpawner != null) enemySpawner.gameObject.SetActive(false);
     }
     public void ReturnToIdle()
     {

@@ -29,9 +29,14 @@ public class LeaderBoard : MonoBehaviour
 
 
 
-        string jsonString = PlayerPrefs.GetString("ZleaderboardEntries");
+        string jsonString = PlayerPrefs.GetString("ZleaderboardEntries", "");
 
-        LeaderboardEntries leaderboard = JsonUtility.FromJson<LeaderboardEntries>(jsonString);
+        LeaderboardEntries leaderboard = (jsonString != "") ? JsonUtility.FromJson<LeaderboardEntries>(jsonString) : null;
+        if (leaderboard == null)
+        {
+            leaderboard = new LeaderboardEntries();
+            leaderboard.leaderboardEntryDataList = new List<LeaderboardEntryData>();
+        }
 
         leaderboardEntryDataList = leaderboard.leaderboardEntryDataList;
 

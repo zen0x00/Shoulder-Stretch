@@ -62,7 +62,6 @@ public class InputSystem : MonoBehaviour
     {
         OnActionAttempted?.Invoke(action);
         bool success = false;
-        float mult = difficultyScaler?.CooldownMultiplier ?? 1f;
         switch (action)
         {
             case ActionType.leftShoot:
@@ -71,10 +70,9 @@ public class InputSystem : MonoBehaviour
                 break;
 
             case ActionType.rightShoot:
-                RightActionCount++; 
-                success = true; 
+                RightActionCount++;
+                success = true;
                 break;
-
         }
         if (success) SuccessfulActions++;
         else FailedActions++;

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour
@@ -10,26 +8,10 @@ public class AudioManager : MonoBehaviour
     [SerializeField]private AudioClip ZombieDead;
     [SerializeField]private AudioClip WavesSound;
     [SerializeField] private AudioClip playerHurtSound;
-    public void PlayGunShot()
-    {
-        audioSource.PlayOneShot(GunShot);
-    }
-    public void PlayButtonClick()
-    {
-        audioSource.PlayOneShot(ButtonClick);
-    }
-    public void PlayZombieDead()
-    {
-        audioSource.PlayOneShot(ZombieDead);
-    }
-    public void PlayWavesSound()
-    {
-        audioSource.PlayOneShot(WavesSound);
-    }
-
-    public void PlayPlayerDamageTakenSound()
-    {
-        audioSource.PlayOneShot(playerHurtSound);
-    }
+    public void PlayGunShot() { if (audioSource && GunShot) audioSource.PlayOneShot(GunShot); }
+    public void PlayButtonClick() { if (audioSource && ButtonClick) audioSource.PlayOneShot(ButtonClick); }
+    public void PlayZombieDead() { if (audioSource && ZombieDead) audioSource.PlayOneShot(ZombieDead); }
+    public void PlayWavesSound() { if (audioSource && WavesSound) audioSource.PlayOneShot(WavesSound); }
+    public void PlayPlayerDamageTakenSound() { if (audioSource && playerHurtSound) audioSource.PlayOneShot(playerHurtSound); }
 
 }

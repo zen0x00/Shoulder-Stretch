@@ -35,15 +35,10 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
-        
-        
-        
-        audioManager = FindFirstObjectByType<AudioManager>();
-        
-        
     }
     void Awake()
     {
+        audioManager = FindFirstObjectByType<AudioManager>();
         AmmoPack=transform.Find("AmmoPack").gameObject;
         packParent = AmmoPack.transform.parent;
         packLocalPos = AmmoPack.transform.localPosition;
@@ -99,9 +94,9 @@ public class Enemy : MonoBehaviour
             return;
         }
 
-        float distance = Vector3.Distance(transform.position, player.position);
-
         if (player == null) return;
+
+        float distance = Vector3.Distance(transform.position, player.position);
         Vector3 direction = (player.position - transform.position).normalized;
         transform.LookAt(player);
         
@@ -144,7 +139,7 @@ public class Enemy : MonoBehaviour
             return;
              
         }
-        ScoringSystem.Instance.AddKillPoints();
+        ScoringSystem.Instance?.AddKillPoints();
         
         animator.SetTrigger("IsDead");
         if(audioManager != null)

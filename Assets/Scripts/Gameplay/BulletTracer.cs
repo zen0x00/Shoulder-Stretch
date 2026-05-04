@@ -18,6 +18,7 @@ public class BulletTracer : MonoBehaviour
 
     public void Fire(Vector3 from, Vector3 to)
     {
+        StopAllCoroutines();
         gameObject.SetActive(true);
         lineRenderer.SetPosition(0, from);
         lineRenderer.SetPosition(1, to);

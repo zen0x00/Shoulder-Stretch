@@ -31,12 +31,14 @@ public class HUDController : MonoBehaviour
         }
         //shieldIcon.enabled = false;
     }
+    private int lastDisplayedSecond = -1;
     private void Update()
     {
-        if (fitness)
-        {
-            TimeSpan t = TimeSpan.FromSeconds(fitness.TimeRemaining);
-            timerText.text = string.Format("{0:D2}:{1:D2}", t.Minutes, t.Seconds);
-        }
+        if (!fitness) return;
+        int seconds = Mathf.CeilToInt(fitness.TimeRemaining);
+        if (seconds == lastDisplayedSecond) return;
+        lastDisplayedSecond = seconds;
+        TimeSpan t = TimeSpan.FromSeconds(seconds);
+        timerText.text = string.Format("{0:D2}:{1:D2}", t.Minutes, t.Seconds);
     }
 }

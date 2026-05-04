@@ -17,27 +17,20 @@ public class GroundManager : MonoBehaviour
   private void Update()
   {
     if (player == null) return;
-    if (player.transform.position.z + spawnDistance > nextSpawnZ) SpawnSegment();
-    if (activeSegments.Count > poolSize)
-    {
-      GameObject old = activeSegments[0];
-      if (player.transform.position.z > old.transform.position.z + segmentLength)
-      {
-        activeSegments.RemoveAt(0);
-        RecycleSegment(old);
-      }
-    }
+    if (player.transform.position.z + spawnDistance > nextSpawnZ) AdvanceSegment();
+  }
+  private void AdvanceSegment()
+  {
+    GameObject old = activeSegments[0];
+    activeSegments.RemoveAt(0);
+    old.transform.position = new Vector3(0, -0.5f, nextSpawnZ);
+    ApplyProceduralVariation(old);
+    activeSegments.Add(old);
+    nextSpawnZ += segmentLength;
   }
   private void SpawnSegment()
   {
     GameObject segment = Instantiate(groundPrefab, new Vector3(0, -0.5f, nextSpawnZ), Quaternion.identity, transform);
-    ApplyProceduralVariation(segment);
-    activeSegments.Add(segment);
-    nextSpawnZ += segmentLength;
-  }
-  private void RecycleSegment(GameObject segment)
-  {
-    segment.transform.position = new Vector3(0, -0.5f, nextSpawnZ);
     ApplyProceduralVariation(segment);
     activeSegments.Add(segment);
     nextSpawnZ += segmentLength;

@@ -15,7 +15,7 @@ public class SessionEndController : MonoBehaviour
         if (gameManager == null) gameManager = FindFirstObjectByType<GameStateManager>();
         if (input == null) input = FindFirstObjectByType<InputSystem>();
         if (score == null) score = FindFirstObjectByType<ScoringSystem>();
-        gameManager.OnStateChanged += HandleStateChange;
+        if (gameManager != null) gameManager.OnStateChanged += HandleStateChange;
     }
 
     private void HandleStateChange(GameState state)

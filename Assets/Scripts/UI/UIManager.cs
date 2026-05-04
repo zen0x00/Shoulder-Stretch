@@ -91,9 +91,9 @@ public class UIManager : MonoBehaviour
 
     public IEnumerator BlickRoutine()
     {
-        damagePanel.SetActive(true);
+        damagePanel?.SetActive(true);
         yield return new WaitForSeconds(0.1f);
-        damagePanel.SetActive(false);
+        damagePanel?.SetActive(false);
     }
 
 

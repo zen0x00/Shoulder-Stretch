@@ -11,15 +11,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private DifficultyScaler difficultyScaler;
     [SerializeField] private AudioManager audioManager;
     [SerializeField] private int maxHealth = 100;
-    public int currentHealth;
+    private int currentHealth;
     [SerializeField] private int maxAmmo = 10;
-    public int currentAmmo;
+    private int currentAmmo;
 
     public int CurrentHealth => currentHealth;
     public int MaxHealth => maxHealth;
     public int CurrentAmmo => currentAmmo;
 
-    public UIManager uiManager;
+    [SerializeField] private UIManager uiManager;
     private void Awake()
     {
         if (Instance != null && Instance != this) Destroy(gameObject);
@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour
     {
         if (gameManager == null) gameManager = FindFirstObjectByType<GameStateManager>();
         if (difficultyScaler == null) difficultyScaler = FindFirstObjectByType<DifficultyScaler>();
+        if (uiManager == null) uiManager = FindFirstObjectByType<UIManager>();
         ResetPlayer();
         if (gameManager != null) gameManager.OnStateChanged += HandleStateChange;
     }
@@ -52,7 +53,7 @@ public class PlayerController : MonoBehaviour
     {
         currentHealth -= damage;
         audioManager.PlayPlayerDamageTakenSound();
-        uiManager.ShowDamageBlink();
+        uiManager?.ShowDamageBlink();
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
         if (currentHealth <= 0) Die();
     }

@@ -13,10 +13,9 @@ public class FitnessTrackingSystem : MonoBehaviour
     public float Calories => Duration * (difficultyScaler?.IntensityFactor ?? 1f) * 0.1f;
     private void Awake()
     {
+        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
+        Instance = this;
         startTime = Time.time;
-
-        if (Instance != null && Instance != this) Destroy(gameObject);
-        else Instance = this;
     }
     private void Start()
     {

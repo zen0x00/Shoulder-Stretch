@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -50,7 +48,9 @@ public class GraphController : MonoBehaviour
     void ShowGraph(List<LeaderBoard.LeaderboardEntryData> valueList)
     {
         float graphHeight = graphCotainer.sizeDelta.y;
-        float yMaximum = 5000f;
+        float yMaximum = 100f;
+        foreach (var entry in valueList) if (entry.score > yMaximum) yMaximum = entry.score;
+        yMaximum *= 1.1f;
         float xSize = graphCotainer.sizeDelta.x / (valueList.Count + 1);
         GameObject lastDotGameObject = null;
         for (int i = 0; i < valueList.Count; i++)
