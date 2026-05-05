@@ -32,6 +32,7 @@ public class GameStateManager : MonoBehaviour
     private void Start()
     {
         Debug.Log("[GSM] Start — setting Idle state");
+        currentState = GameState.GameOver; // force non-Idle so SetState fires the event on scene load
         SetState(GameState.Idle);
     }
     public void SetDifficulty(Difficulty difficulty)

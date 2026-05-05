@@ -29,6 +29,7 @@ public class Enemy : MonoBehaviour
     private int currentHealth;
     private Transform player;
     private bool movePack = false;
+    private bool isDead = false;
     private PlayerController playerCtrl;
 
     [SerializeField]
@@ -90,6 +91,9 @@ public class Enemy : MonoBehaviour
         CancelInvoke(nameof(DisableEnemy));
         attackTimer = 0f;
         movePack = false;
+        isDead = false;
+        var col = GetComponent<Collider>();
+        if (col != null) col.enabled = true;
 
         for (int i = 0; i < renderers.Length; i++)
         {
@@ -107,6 +111,8 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
+        if (isDead) return;
+
         if (movePack && AmmoPack != null)
         {
             AmmoPack.transform.position = Vector3.MoveTowards(
@@ -171,6 +177,10 @@ public class Enemy : MonoBehaviour
 
     private void Die()
     {
+        isDead = true;
+        var col = GetComponent<Collider>();
+        if (col != null) col.enabled = false;
+
         if (AmmoPack != null && AmmoPack.activeSelf)
         {
             AmmoPack.transform.SetParent(null);
