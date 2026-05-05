@@ -140,18 +140,16 @@ public class Enemy : MonoBehaviour
         Vector3 direction = (player.position - transform.position).normalized;
         transform.LookAt(player);
 
+        attackTimer -= Time.deltaTime;
+
         if (distance > 1.5f)
         {
             transform.position += direction * speed * Time.deltaTime;
         }
-        else
+        else if (attackTimer <= 0f)
         {
-            attackTimer -= Time.deltaTime;
-            if (attackTimer <= 0f)
-            {
-                attackTimer = attackCooldown;
-                Attack();
-            }
+            attackTimer = attackCooldown;
+            Attack();
         }
     }
 
@@ -161,7 +159,16 @@ public class Enemy : MonoBehaviour
         if (playerCtrl)
             playerCtrl.TakeDamage(damage);
         if (animator != null)
+        {
+            animator.applyRootMotion = false;
             animator.SetTrigger("IsAttack");
+        }
+    }
+
+    public void OnAttackAnimationEnd()
+    {
+        if (animator != null)
+            animator.applyRootMotion = true;
     }
 
     public void TakeDamage(int amount)
@@ -177,10 +184,6 @@ public class Enemy : MonoBehaviour
 
     private void Die()
     {
-        isDead = true;
-        var col = GetComponent<Collider>();
-        if (col != null) col.enabled = false;
-
         if (AmmoPack != null && AmmoPack.activeSelf)
         {
             AmmoPack.transform.SetParent(null);
@@ -188,6 +191,11 @@ public class Enemy : MonoBehaviour
             movePack = true;
             return;
         }
+
+        isDead = true;
+        var col = GetComponent<Collider>();
+        if (col != null) col.enabled = false;
+
         ScoringSystem.Instance?.AddKillPoints();
 
         if (animator != null)

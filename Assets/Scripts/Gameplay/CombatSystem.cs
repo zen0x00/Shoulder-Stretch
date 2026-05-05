@@ -4,7 +4,7 @@ public class CombatSystem : MonoBehaviour
     [SerializeField] private InputSystem inputSystem;
     [SerializeField] private PlayerController player;
     [SerializeField] private float shootRange = 50f;
-    [SerializeField] private int shootDamage = 100;
+    [SerializeField] private int shootDamage = 25;
     [SerializeField] private EnemySpawner spawner;
     [SerializeField] private CameraFollow cameraFollow;
     [SerializeField] private BulletTracer bulletTracer;

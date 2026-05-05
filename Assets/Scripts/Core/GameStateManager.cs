@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 public enum GameState { Idle, Running, Combat, Dashboard, Paused, GameOver, LevelCompleted }
@@ -10,6 +11,9 @@ public class GameStateManager : MonoBehaviour
     public event Action<Difficulty> OnDifficultyChanged;
     [SerializeField] private GameState currentState = GameState.Idle;
     [SerializeField] private Difficulty currentDifficulty = Difficulty.Beginner;
+
+    private static bool pendingRestart = false;
+    private static Difficulty pendingDifficulty = Difficulty.Beginner;
     [SerializeField] private Enemy enemy;
     [SerializeField] private PlayerController playerController;
     [SerializeField] private EnemySpawner enemySpawner;
@@ -29,11 +33,22 @@ public class GameStateManager : MonoBehaviour
         if (Instance != null && Instance != this) Destroy(gameObject);
         else Instance = this;
     }
-    private void Start()
+    private IEnumerator Start()
     {
-        Debug.Log("[GSM] Start — setting Idle state");
-        currentState = GameState.GameOver; // force non-Idle so SetState fires the event on scene load
-        SetState(GameState.Idle);
+        yield return null; // wait one frame so all other Start() methods subscribe first
+        currentState = GameState.GameOver;
+        if (pendingRestart)
+        {
+            pendingRestart = false;
+            currentDifficulty = pendingDifficulty;
+            sessionStartTime = Time.time;
+            SetState(GameState.Running);
+        }
+        else
+        {
+            Debug.Log("[GSM] Start — setting Idle state");
+            SetState(GameState.Idle);
+        }
     }
     public void SetDifficulty(Difficulty difficulty)
     {
@@ -93,9 +108,10 @@ public class GameStateManager : MonoBehaviour
     }
     public void RestartGame()
     {
+        pendingRestart = true;
+        pendingDifficulty = currentDifficulty;
         Time.timeScale = 1f;
-        sessionStartTime = Time.time;
-        SetState(GameState.Running);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void SetStateDirectly(GameState newState) => SetState(newState);

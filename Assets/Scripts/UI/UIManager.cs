@@ -19,9 +19,9 @@ public class UIManager : MonoBehaviour
         if (analyticsNxtBtn) analyticsNxtBtn.onClick.AddListener(() => { audioManager?.PlayButtonClick(); ShowGraph(); });
         if (graphNxtBtn) graphNxtBtn.onClick.AddListener(() => { audioManager?.PlayButtonClick(); gameManager.ReturnToIdle(); });
         if (gameOverNextBtn) gameOverNextBtn.onClick.AddListener(() => { audioManager?.PlayButtonClick(); gameManager.SetStateDirectly(GameState.Dashboard); });
-        if (gameOverRestartBtn) gameOverRestartBtn.onClick.AddListener(() => { audioManager?.PlayButtonClick(); gameManager.ReturnToIdle(); });
+        if (gameOverRestartBtn) gameOverRestartBtn.onClick.AddListener(() => { audioManager?.PlayButtonClick(); gameManager.RestartGame(); });
         if (levelCompleteNxtBtn) levelCompleteNxtBtn.onClick.AddListener(() => { audioManager?.PlayButtonClick(); gameManager.SetStateDirectly(GameState.Dashboard); });
-        if (levelCompleteRestartBtn) levelCompleteRestartBtn.onClick.AddListener(() => { audioManager?.PlayButtonClick(); gameManager.ReturnToIdle(); });
+        if (levelCompleteRestartBtn) levelCompleteRestartBtn.onClick.AddListener(() => { audioManager?.PlayButtonClick(); gameManager.RestartGame(); });
 
         if (gameManager != null) gameManager.OnStateChanged += HandleStateChange;
     }
