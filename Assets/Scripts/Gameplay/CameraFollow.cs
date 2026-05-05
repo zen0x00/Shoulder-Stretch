@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+
 public class CameraFollow : MonoBehaviour
 {
     // [SerializeField] private Transform target;
@@ -23,7 +24,7 @@ public class CameraFollow : MonoBehaviour
         Vector3 originalPos = transform.localPosition;
         float e = 0;
 
-        while(e < duration)
+        while (e < duration)
         {
             transform.localPosition = originalPos + Random.insideUnitSphere * magnitude;
             e += Time.deltaTime;
@@ -33,3 +34,4 @@ public class CameraFollow : MonoBehaviour
         transform.localPosition = originalPos;
     }
 }
+

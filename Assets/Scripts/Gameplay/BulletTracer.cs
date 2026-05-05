@@ -3,9 +3,14 @@ using UnityEngine;
 
 public class BulletTracer : MonoBehaviour
 {
-    [SerializeField] LineRenderer lineRenderer;
-    [SerializeField] float traceDuration = 0.05f;
-    [SerializeField] float traceWidth = 0.05f;
+    [SerializeField]
+    LineRenderer lineRenderer;
+
+    [SerializeField]
+    float traceDuration = 0.05f;
+
+    [SerializeField]
+    float traceWidth = 0.05f;
 
     private void Awake()
     {
@@ -19,9 +24,9 @@ public class BulletTracer : MonoBehaviour
     public void Fire(Vector3 from, Vector3 to)
     {
         StopAllCoroutines();
-        lineRenderer.SetPosition(0, from);
         lineRenderer.SetPosition(1, to);
         lineRenderer.enabled = true;
+        lineRenderer.SetPosition(0, from);
         StartCoroutine(FadeOut());
     }
 

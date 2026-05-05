@@ -1,31 +1,53 @@
 using System;
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
     public event Action<Enemy> OnEnemyDeath;
-    [SerializeField] private int health = 100;
-    [SerializeField] private float speed = 1f;
-    [SerializeField] private int damage = 20;
-    [SerializeField] private float packSpeed = 16f;
-    [SerializeField] private int ammoDropAmount = 5;
-    [SerializeField] private float ammoDropChance = 0.3f;
-    [SerializeField] private ParticleSystem deathParticle;
+
+    [SerializeField]
+    private int health = 100;
+
+    [SerializeField]
+    private float speed = 1f;
+
+    [SerializeField]
+    private int damage = 20;
+
+    [SerializeField]
+    private float packSpeed = 16f;
+
+    [SerializeField]
+    private int ammoDropAmount = 5;
+
+    [SerializeField]
+    private float ammoDropChance = 0.3f;
+
+    [SerializeField]
+    private ParticleSystem deathParticle;
     private int currentHealth;
     private Transform player;
-    private bool movePack=false;
+    private bool movePack = false;
     private PlayerController playerCtrl;
-    [SerializeField] private GameObject AmmoPack;
+
+    [SerializeField]
+    private GameObject AmmoPack;
     private Transform packParent;
     private Vector3 packLocalPos;
 
-    public enum Lane { Left, Right};
+    public enum Lane
+    {
+        Left,
+        Right,
+    };
+
     public Lane lane;
 
     Animator animator;
 
-    [SerializeField] private float attackCooldown = 1f;
+    [SerializeField]
+    private float attackCooldown = 1f;
     private float attackTimer = 0f;
 
     private SkinnedMeshRenderer[] renderers;
@@ -33,16 +55,16 @@ public class Enemy : MonoBehaviour
 
     private AudioManager audioManager;
 
-    
-
     void Start()
     {
         animator = GetComponent<Animator>();
     }
+
     void Awake()
     {
         audioManager = FindFirstObjectByType<AudioManager>();
-        if (AmmoPack == null) AmmoPack = transform.Find("AmmoPack")?.gameObject;
+        if (AmmoPack == null)
+            AmmoPack = transform.Find("AmmoPack")?.gameObject;
         if (AmmoPack != null)
         {
             packParent = AmmoPack.transform.parent;
@@ -57,8 +79,8 @@ public class Enemy : MonoBehaviour
         {
             originalMaterials[i] = renderers[i].sharedMaterial;
         }
+    }
 
-        }
     public void Initialize(Transform target)
     {
         player = target;
@@ -82,12 +104,16 @@ public class Enemy : MonoBehaviour
         }
         gameObject.SetActive(true);
     }
+
     private void Update()
     {
-        
         if (movePack && AmmoPack != null)
         {
-            AmmoPack.transform.position = Vector3.MoveTowards(AmmoPack.transform.position,player.position,packSpeed * Time.deltaTime);
+            AmmoPack.transform.position = Vector3.MoveTowards(
+                AmmoPack.transform.position,
+                player.position,
+                packSpeed * Time.deltaTime
+            );
             if (Vector3.Distance(AmmoPack.transform.position, player.position) < 0.5f)
             {
                 playerCtrl.AmmoReload(ammoDropAmount);
@@ -97,17 +123,16 @@ public class Enemy : MonoBehaviour
                 movePack = false;
 
                 Die();
-                
             }
             return;
         }
 
-        if (player == null) return;
+        if (player == null)
+            return;
 
         float distance = Vector3.Distance(transform.position, player.position);
         Vector3 direction = (player.position - transform.position).normalized;
         transform.LookAt(player);
-        
 
         if (distance > 1.5f)
         {
@@ -123,44 +148,53 @@ public class Enemy : MonoBehaviour
             }
         }
     }
+
     private void Attack()
     {
         Debug.Log($"[ENEMY] Attack → player health will drop by {damage}");
-        if (playerCtrl) playerCtrl.TakeDamage(damage);
-        if (animator != null) animator.SetTrigger("IsAttack");
+        if (playerCtrl)
+            playerCtrl.TakeDamage(damage);
+        if (animator != null)
+            animator.SetTrigger("IsAttack");
     }
+
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
-        if (deathParticle != null) deathParticle.Play();
+        if (deathParticle != null)
+            deathParticle.Play();
 
         HitEffect();
-        if (currentHealth <= 0) Die();
+        if (currentHealth <= 0)
+            Die();
     }
+
     private void Die()
     {
         if (AmmoPack != null && AmmoPack.activeSelf)
         {
             AmmoPack.transform.SetParent(null);
             AmmoPack.SetActive(true);
-            movePack=true;
+            movePack = true;
             return;
-             
         }
         ScoringSystem.Instance?.AddKillPoints();
-        
-        if (animator != null) animator.SetTrigger("IsDead");
-        if(audioManager != null)
+
+        if (animator != null)
+            animator.SetTrigger("IsDead");
+        if (audioManager != null)
         {
             audioManager.PlayZombieDead();
         }
         Invoke(nameof(DisableEnemy), 2f);
     }
+
     void DisableEnemy()
     {
         OnEnemyDeath?.Invoke(this);
         gameObject.SetActive(false);
     }
+
     public void HitEffect()
     {
         StartCoroutine(HitFlash());
@@ -168,7 +202,6 @@ public class Enemy : MonoBehaviour
 
     IEnumerator HitFlash()
     {
-        
         foreach (var r in renderers)
         {
             r.material.SetColor("_BaseColor", Color.red);
@@ -176,10 +209,10 @@ public class Enemy : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
-        
         for (int i = 0; i < renderers.Length; i++)
         {
             renderers[i].material = originalMaterials[i];
         }
     }
 }
+
