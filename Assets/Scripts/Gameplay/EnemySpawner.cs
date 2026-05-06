@@ -51,6 +51,10 @@ public class EnemySpawner : MonoBehaviour
             difficultyScaler = FindFirstObjectByType<DifficultyScaler>();
         if (player == null)
             player = FindFirstObjectByType<PlayerController>();
+        if (leftLaneSpawn == null)
+            Debug.LogError("[SPAWNER] leftLaneSpawn is not assigned in Inspector.");
+        if (rightLaneSpawn == null)
+            Debug.LogError("[SPAWNER] rightLaneSpawn is not assigned in Inspector.");
         spawnInterval = SpawnDuration / Zombies;
         wavesText.text = "Wave-1";
         spawnTimer = 2f;
