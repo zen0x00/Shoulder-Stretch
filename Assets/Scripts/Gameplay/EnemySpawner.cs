@@ -15,13 +15,13 @@ public class EnemySpawner : MonoBehaviour
     private PlayerController player;
 
     [SerializeField]
+    private Transform leftLaneSpawn;
+
+    [SerializeField]
+    private Transform rightLaneSpawn;
+
+    [SerializeField]
     private Enemy[] enemyPrefabs;
-
-    [SerializeField]
-    private float spawnWidth = 4f;
-
-    [SerializeField]
-    private float spawnDistance = 80f;
 
     [SerializeField]
     private int Zombies = 10;
@@ -120,24 +120,28 @@ public class EnemySpawner : MonoBehaviour
         Enemy enemy = GetFromPool();
         if (enemy == null)
             return;
-        float xOffset;
 
-        if (Random.value > 0.5f)
-            xOffset = Random.Range(2f, spawnWidth);
+        bool spawnLeft = Random.value > 0.5f;
+        Transform spawnTransform = spawnLeft ? leftLaneSpawn : rightLaneSpawn;
+
+        if (spawnTransform == null)
+        {
+            Debug.LogError($"[SPAWNER] {(spawnLeft ? "leftLaneSpawn" : "rightLaneSpawn")} is not assigned in Inspector.");
+            return;
+        }
+
+        Vector3 rawPos = spawnTransform.position;
+        Vector3 pos = rawPos;
+        if (Physics.Raycast(rawPos + Vector3.up * 10f, Vector3.down, out RaycastHit hit, 20f))
+            pos.y = hit.point.y;
         else
-            xOffset = Random.Range(-spawnWidth, -2f);
-        Vector3 pos =
-            player.transform.position + Vector3.forward * spawnDistance + Vector3.right * xOffset;
-
-        bool spwanLeft = xOffset >= 0 ? false : true;
+            pos.y = 0f;
 
         enemy.transform.position = pos;
-        enemy.lane = spwanLeft ? Enemy.Lane.Left : Enemy.Lane.Right;
+        enemy.lane = spawnLeft ? Enemy.Lane.Left : Enemy.Lane.Right;
         enemy.Initialize(player.transform);
         spawnedCount++;
-        Debug.Log(
-            $"[SPAWNER] Spawned enemy {spawnedCount}/{Zombies} in {enemy.lane} lane at {pos}"
-        );
+        Debug.Log($"[SPAWNER] Spawned enemy {spawnedCount}/{Zombies} in {enemy.lane} lane at {pos}");
     }
 
     bool AreEnemiesAlive()
