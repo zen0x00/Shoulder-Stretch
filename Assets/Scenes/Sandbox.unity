@@ -23196,7 +23196,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 1343834694}
-  difficultyScaler: {fileID: 0}
+  difficultyScaler: {fileID: 1343834695}
   player: {fileID: 601564279}
   leftLaneSpawn: {fileID: 270379560}
   rightLaneSpawn: {fileID: 1359535380}
