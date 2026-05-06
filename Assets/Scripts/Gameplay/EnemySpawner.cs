@@ -36,6 +36,9 @@ public class EnemySpawner : MonoBehaviour
     private float spawnInterval;
 
     [SerializeField]
+    private float spawnYOffset = 0.1f;
+
+    [SerializeField]
     private AudioManager audioManager;
 
     public List<Enemy> activeEnemies = new List<Enemy>();
@@ -137,9 +140,9 @@ public class EnemySpawner : MonoBehaviour
         Vector3 rawPos = spawnTransform.position;
         Vector3 pos = rawPos;
         if (Physics.Raycast(rawPos + Vector3.up * 10f, Vector3.down, out RaycastHit hit, 20f))
-            pos.y = hit.point.y;
+            pos.y = hit.point.y + spawnYOffset;
         else
-            pos.y = 0f;
+            pos.y = spawnYOffset;
 
         enemy.transform.position = pos;
         enemy.lane = spawnLeft ? Enemy.Lane.Left : Enemy.Lane.Right;

@@ -56,13 +56,9 @@ public class Enemy : MonoBehaviour
 
     private AudioManager audioManager;
 
-    void Start()
-    {
-        animator = GetComponent<Animator>();
-    }
-
     void Awake()
     {
+        animator = GetComponent<Animator>();
         audioManager = FindFirstObjectByType<AudioManager>();
         if (AmmoPack == null)
             AmmoPack = transform.Find("AmmoPack")?.gameObject;
@@ -107,6 +103,9 @@ public class Enemy : MonoBehaviour
             AmmoPack.SetActive(UnityEngine.Random.value < ammoDropChance);
         }
         gameObject.SetActive(true);
+
+        if (animator != null)
+            animator.Play(animator.GetCurrentAnimatorStateInfo(0).fullPathHash, 0, UnityEngine.Random.Range(0f, 1f));
     }
 
     private void Update()
