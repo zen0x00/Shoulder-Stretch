@@ -139,10 +139,10 @@ public class EnemySpawner : MonoBehaviour
 
         Vector3 rawPos = spawnTransform.position;
         Vector3 pos = rawPos;
-        if (Physics.Raycast(rawPos + Vector3.up * 10f, Vector3.down, out RaycastHit hit, 20f))
-            pos.y = hit.point.y + spawnYOffset;
-        else
-            pos.y = spawnYOffset;
+        RaycastHit[] hits = Physics.RaycastAll(rawPos + Vector3.up * 10f, Vector3.down, 20f);
+        float groundY = float.MaxValue;
+        foreach (var h in hits) if (h.point.y < groundY) groundY = h.point.y;
+        pos.y = (groundY < float.MaxValue ? groundY : 0f) + spawnYOffset;
 
         enemy.transform.position = pos;
         enemy.lane = spawnLeft ? Enemy.Lane.Left : Enemy.Lane.Right;
